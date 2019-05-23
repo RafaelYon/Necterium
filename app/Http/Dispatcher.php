@@ -16,13 +16,6 @@ class Dispatcher
         $request = new Request();
         $router = new Router($request);
 
-        try
-        {
-            $router->doAction();
-        }
-        catch (Exception $ex)
-        {
-            die('Not found');
-        }
+        $router->doAction();
     }
 }

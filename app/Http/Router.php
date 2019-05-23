@@ -7,6 +7,8 @@ use Exception;
 use App\Http\Request;
 use App\Support\UrlHelper;
 
+use App\Exception\NotFoundException;
+
 class Router
 {
     private $request;
@@ -20,10 +22,11 @@ class Router
     {
         $parts = explode('@', $controllerAction);
 
-        $controller = 'App\\Http\Controllers\\' . $parts[0];
+        $controller = 'App\\Http\\Controllers\\' . $parts[0];
         $action = $parts[1];
 
-
+        $controller = new $controller();
+        return $controller->{$action}($this->request);
     }
 
     private function checkRouteSplit($parts, string $route)
@@ -78,17 +81,15 @@ class Router
 
     private function checkRouteMatch(array $routes)
     {
-        foreach ($routes as $route)
+        foreach ($routes as $route => $controllerAction)
         {
             if ($this->compareRouteAndRequest($route))
             {
-                dp([$route, $this->request]);
-
-                break;
+                return $this->executeControllerAction($controllerAction);
             }
         }
 
-        dp('Not found!');
+        throw new NotFoundException($this->request);
     }
 
     public function doAction()
