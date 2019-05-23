@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Database;
+
+use \PDO;
+
+class Connection
+{
+    private $pdo;
+
+    public function __construct(string $connectionKey)
+    {
+        $config = config(implode('.', ['database', 'connections', $connectionKey]));
+
+        $this->pdo = new PDO(
+            $config['driver'] . ':host=' . $config['host']
+            . ';port=' . $config['port']
+            . ';dbname=' . $config['database']
+            . ';charset=' . $config['charset'],
+            $config['username'], $config['password']
+        );
+
+        $this->pdo->setFetchMode(PDO::FETCH_OBJ);
+    }
+
+    private function bindValues($statement, $bindings)
+    {
+        if (empty($bindings))
+            return;
+
+        foreach ($bindings as $key => $value)
+        {
+            $bindType = PDO::PARAM_STR;
+            
+            if (is_int($key))
+            {
+                $key += 1;
+                $bindType = PDO::PARAM_INT;
+            }
+            
+            $statement->bindValue($key, $value, $bindType);
+        }
+    }
+
+    protected function execute(string $query, $bindings)
+    {
+        $statement = $this->pdo->prepare($query);
+
+        $this->bindValues($statement, $bindings);
+
+        $statement->execute();
+
+        return $statement;
+    }
+
+    public function executeStatement(string $query, $bindings)
+    {
+        return $this->execute($query, $bindings)->rowCount();
+    }
+
+    public function select(string $query, $bindings = [])
+    {
+        return $this->execute($query, $bindings)->fetchAll();
+    }
+
+    public function selectOne(string $query, $bindings = [])
+    {
+        return array_shift($this->select($query, $bindings));
+    }
+}

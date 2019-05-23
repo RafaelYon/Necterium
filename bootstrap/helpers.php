@@ -10,7 +10,8 @@
 function dp ($data)
 {
     echo '<pre>';
-    die(print_r($data));
+    print_r($data);
+    die();
 }
 
 /**

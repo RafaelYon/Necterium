@@ -1,0 +1,18 @@
+version: '2.0'
+
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - agenda_telefonica:/home/rafael/docker/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: agenda_telefonica
+       MYSQL_DATABASE: agenda_telefonica
+       MYSQL_USER: agenda_telefonica
+       MYSQL_PASSWORD: agenda_telefonica
+     ports:
+       - "3306:3306"
+
+volumes:
+     agenda_telefonica:
