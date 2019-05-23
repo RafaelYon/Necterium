@@ -7,7 +7,7 @@ use Exception;
 use App\Http\Request;
 use App\Support\UrlHelper;
 
-use App\Exception\NotFoundException;
+use App\Exceptions\NotFoundException;
 
 class Router
 {
