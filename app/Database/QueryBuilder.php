@@ -134,9 +134,12 @@ class QueryBuilder
     }
 
     protected function protectedValue($value)
-    {
+    {        
         if (is_string($value))
             $value = '"' . $value . '"';
+
+        if ($value == null)
+            $value = 'NULL';
 
         return $value;
     }

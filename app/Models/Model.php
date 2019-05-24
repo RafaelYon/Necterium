@@ -54,6 +54,8 @@ abstract class Model
                     unset($columns[$this->hidden[$i]]);
             }
         }
+
+        return $columns;
     }
 
     protected function getKeyedData(bool $public = false)
@@ -64,7 +66,10 @@ abstract class Model
 
         foreach ($columns as $column)
         {            
-            $data[$column] = $this->{$column};
+            if (!isset($this->{$column}))
+                $data[$column] = null;
+            else
+                $data[$column] = $this->{$column};
         }
 
         return $data;
@@ -103,7 +108,7 @@ abstract class Model
             $data[$this->updatedColumn] = $now;
         }
 
-        return $this->query->insert(array_keys($data), array_values($data));
+        return $query->insert(array_keys($data), [array_values($data)]);
     }
 
     protected function update(QueryBuilder $query)
@@ -123,9 +128,12 @@ abstract class Model
         $query = $this->getQueryBuilder(false);
 
         if (empty($this->{$this->primaryKey}))
-            return $this->insert($query);
+            $query = $this->insert($query);
+        else
+            $query = $this->update($query);
 
-        return $this->update($query);
+        return ConnectionManager::getInstance()->getConnection($this->connection)
+            ->executeStatement($query->toSql());
     }
 
     public function get()
@@ -151,7 +159,7 @@ abstract class Model
         return $this;
     }
 
-    public static function find($primaryKey) : Model
+    public static function find($primaryKey)
     {
         $instance = new static();
         

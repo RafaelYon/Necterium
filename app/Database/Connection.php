@@ -53,7 +53,7 @@ class Connection
         return $statement;
     }
 
-    public function executeStatement(string $query, $bindings)
+    public function executeStatement(string $query, $bindings = [])
     {
         return $this->execute($query, $bindings)->rowCount();
     }
