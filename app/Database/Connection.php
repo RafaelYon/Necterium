@@ -19,8 +19,6 @@ class Connection
             . ';charset=' . $config['charset'],
             $config['username'], $config['password']
         );
-
-        $this->pdo->setFetchMode(PDO::FETCH_OBJ);
     }
 
     private function bindValues($statement, $bindings)
@@ -46,6 +44,8 @@ class Connection
     {
         $statement = $this->pdo->prepare($query);
 
+        $statement->setFetchMode(PDO::FETCH_OBJ);
+
         $this->bindValues($statement, $bindings);
 
         $statement->execute();
@@ -65,6 +65,8 @@ class Connection
 
     public function selectOne(string $query, $bindings = [])
     {
-        return array_shift($this->select($query, $bindings));
+        $results = $this->select($query, $bindings);
+
+        return array_shift($results);
     }
 }

@@ -5,7 +5,7 @@ namespace App\Database;
 class QueryBuilder
 {
     protected $table = null;
-    protected $command = '';
+    protected $command = null;
     protected $fields = array();
     protected $values = array();
     protected $conditions = array();
@@ -19,6 +19,35 @@ class QueryBuilder
     protected function setCommand(string $command)
     {
         $this->command = $command;
+    }
+
+    public function isEmpty() : bool
+    {
+        if ($this->command != null)
+            return false;
+        
+        if (!empty($this->fields))
+            return false;
+
+        if (!empty($this->values))
+            return false;
+
+        if (!empty($this->conditions))
+            return false;
+
+        if (!empty($this->joins))
+            return false;
+
+        if (!empty($this->groupBy))
+            return false;
+
+        if (!empty($this->orderBy))
+            return false;
+
+        if ($this->limit != null)
+            return false;
+
+        return true;
     }
 
     public static function table(string $table) : QueryBuilder
@@ -52,7 +81,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function insert(array $columns,  array $values) : QueryBuilder
+    public function insert(array $columns, array $values) : QueryBuilder
     {
         $this->setCommand('INSERT');
         
@@ -237,7 +266,7 @@ class QueryBuilder
 
         if (!empty($this->conditions))
         {
-            $sql .= 'WHERE ' . implode('AND ', $this->conditions) . ' ';
+            $sql .= 'WHERE ' . implode(' AND ', $this->conditions) . ' ';
         }
 
         if (!empty($this->groupBy))
