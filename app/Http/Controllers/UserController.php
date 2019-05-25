@@ -13,8 +13,15 @@ class UserController
         // $phone->number = '111111111';
         // dp($phone->save());
 
-        dp(\App\Models\Phone::find(1));       
-        
-        dp('Ok');
+        $phone = \App\Models\Phone::find(1);
+
+        if ($phone == null)
+            dp('Phone not found');
+        else
+        {
+            dp([
+                $phone->number, $phone->delete()
+            ]);
+        }
     }
 }

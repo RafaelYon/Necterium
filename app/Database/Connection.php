@@ -2,7 +2,8 @@
 
 namespace App\Database;
 
-use \PDO;
+use PDO;
+use PDOStatement;
 
 class Connection
 {
@@ -40,7 +41,7 @@ class Connection
         }
     }
 
-    protected function execute(string $query, $bindings)
+    protected function execute(string $query, $bindings) : PDOStatement
     {
         $statement = $this->pdo->prepare($query);
 
@@ -53,12 +54,12 @@ class Connection
         return $statement;
     }
 
-    public function executeStatement(string $query, $bindings = [])
+    public function executeStatement(string $query, $bindings = []) : int
     {
         return $this->execute($query, $bindings)->rowCount();
     }
 
-    public function select(string $query, $bindings = [])
+    public function select(string $query, $bindings = []) : array
     {
         return $this->execute($query, $bindings)->fetchAll();
     }

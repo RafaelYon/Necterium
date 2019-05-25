@@ -22,4 +22,15 @@ class ArrayHelper
 
         return $value;
     }
+
+    public static function except(array $arr, array $except)
+    {
+        foreach ($arr as $key => $value)
+        {            
+            if (in_array($value, $except))
+                unset($arr[$key]);
+        }
+
+        return $arr;
+    }
 }

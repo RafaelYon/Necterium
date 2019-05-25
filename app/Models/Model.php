@@ -5,11 +5,13 @@ namespace App\Models;
 use Exception;
 
 use App\Support\StringHelper;
+use App\Support\ArrayHelper;
+use App\Support\Fillable;
 
 use App\Database\QueryBuilder;
 use App\Database\ConnectionManager;
 
-abstract class Model
+abstract class Model extends Fillable
 {    
     private $queryBuilder = null;
     
@@ -22,10 +24,67 @@ abstract class Model
     protected $createdColumn = 'created_at';
     protected $updatedColumn = 'updated_at';
 
-    protected $fields = [];
     protected $hidden = [];
 
-    protected function getTableName()
+    private function getQueryBuilder(bool $save = true) : QueryBuilder
+    {
+        if ($this->queryBuilder == null)
+            $this->queryBuilder = QueryBuilder::table($this->getTableName());
+
+        $result = $this->queryBuilder;
+
+        if (!$save)
+            $this->queryBuilder = null;
+        
+        return $result;
+    }
+
+    protected function getFields()
+    {
+        $fields = $this->fields;
+
+        if ($this->primaryKey != null)
+            $fields[] = $this->primaryKey;
+
+        if ($this->timestamps)
+        {
+            $fields[] = $this->createdColumn;
+            $fields[] = $this->updatedColumn;
+        }
+
+        return $fields;
+    }
+
+    protected function insert(QueryBuilder $query) : QueryBuilder
+    {
+        $data = $this->toArray();
+
+        unset($data[$this->primaryKey]);
+
+        if ($this->timestamps)
+        {
+            $now = date('Y-m-d H:i:s');
+
+            $data[$this->createdColumn] = $now;
+            $data[$this->updatedColumn] = $now;
+        }
+
+        return $query->insert(array_keys($data), [array_values($data)]);
+    }
+
+    protected function update(QueryBuilder $query) : QueryBuilder
+    {
+        $data = $this->toArray();
+
+        if ($this->timestamps)
+        {
+            $data[$this->updatedColumn] = date('Y-m-d H:i:s');
+        }
+
+        return $query->update($data);
+    }
+
+    protected function getTableName() : string
     {
         if ($this->tableName != null)
             return $tableName;
@@ -33,32 +92,41 @@ abstract class Model
         return StringHelper::toSnakeCase($this->getShortClassName());
     }
 
-    protected function getColumns(bool $public = false)
+    protected function getColumns(bool $public = false) : array
     {
-        $columns = $this->fields;
-
-        if ($this->primaryKey != null)
-            $columns[] = $this->primaryKey;
-
-        if ($this->timestamps)
-        {
-            $columns[] = $this->createdColumn;
-            $columns[] = $this->updatedColumn;
-        }
+        $columns = $this->getFields();
 
         if ($public)
         {
-            for ($i = 0, $len = count($this->hidden); $i < $len; $i++)
-            {
-                if (key_exists($this->hidden[$i], $columns))
-                    unset($columns[$this->hidden[$i]]);
-            }
+            $columns = ArrayHelper::except($columns, $this->hidden);
         }
 
         return $columns;
     }
 
-    protected function getKeyedData(bool $public = false)
+    protected function getShortClassName() : string
+    {        
+        $class = explode('\\', get_called_class());
+        return array_pop($class);
+    }
+
+    /**
+     * Obtém o valor da chave primária do registro ou null caso a mesma não definida
+     */
+    public function getPrimaryKeyValue()
+    {
+        if (!isset($this->{$this->primaryKey}))
+            return null;
+        
+        return $this->{$this->primaryKey};
+    }
+
+    /**
+     * Obtém um array com os valores do registro no estilo Key-Value.
+     * 
+     * @param bool $public Indica se os campos protegidos devem ser ocultos
+     */
+    public function toArray(bool $public = false) : array
     {
         $columns = $this->getColumns($public);
 
@@ -75,68 +143,56 @@ abstract class Model
         return $data;
     }
 
-    protected function getShortClassName() : string
-    {        
-        $class = explode('\\', get_called_class());
-        return array_pop($class);
-    }
-
-    private function getQueryBuilder(bool $save = true)
+    /**
+     * Obtém um json com os valores do registro.
+     * 
+     * @param bool $public Indica se os campos protegidos devem ser ocultos
+     * 
+     * @throws \Exception Caso não seja possível serializar para json
+     */
+    public function toJson(bool $public = false) : string
     {
-        if ($this->queryBuilder == null)
-            $this->queryBuilder = QueryBuilder::table($this->getTableName());
+        $data = $this->toArray($public);
 
-        $result = $this->queryBuilder;
+        $result = json_encode($data);
 
-        if (!$save)
-            $this->queryBuilder = null;
-        
+        if ($result === false)
+        {
+            throw new Exception(
+                "Não foi possível serializar \"{$this->getShortClassName()}\" para json"
+            );
+        }
+
         return $result;
     }
 
-    protected function insert(QueryBuilder $query)
-    {
-        $data = $this->getKeyedData();
-
-        unset($data[$this->primaryKey]);
-
-        if ($this->timestamps)
-        {
-            $now = date('Y-m-d H:i:s');
-
-            $data[$this->createdColumn] = $now;
-            $data[$this->updatedColumn] = $now;
-        }
-
-        return $query->insert(array_keys($data), [array_values($data)]);
-    }
-
-    protected function update(QueryBuilder $query)
-    {
-        $data = $this->getKeyedData();
-
-        if ($this->timestamps)
-        {
-            $data[$this->updatedColumn] = date('Y-m-d H:i:s');
-        }
-
-        return $this->query->update($data);
-    }
-
-    public function save()
+    public function save() : bool
     {
         $query = $this->getQueryBuilder(false);
 
-        if (empty($this->{$this->primaryKey}))
+        if ($this->getPrimaryKeyValue() == null)
             $query = $this->insert($query);
         else
             $query = $this->update($query);
 
-        return ConnectionManager::getInstance()->getConnection($this->connection)
-            ->executeStatement($query->toSql());
+        return (ConnectionManager::getConnection($this->connection)
+                    ->executeStatement($query->toSql()) > 0);
     }
 
-    public function get()
+    public function delete() : bool
+    {        
+        if ($this->getPrimaryKeyValue() == null)
+            return false;
+
+        $query = $this->getQueryBuilder(false)
+                        ->delete()
+                        ->where($this->primaryKey, $this->getPrimaryKeyValue());
+        
+        return (ConnectionManager::getConnection($this->connection)
+                    ->executeStatement($query->toSql()) > 0);
+    }
+
+    public function get() : array
     {
         if ($this->queryBuilder == null)
             throw new Exception('Model query is empty.');
@@ -144,7 +200,18 @@ abstract class Model
         $sql = $this->queryBuilder->toSql();
         $this->queryBuilder = null;
 
-        return ConnectionManager::getInstance()->getConnection($this->connection)->select($sql);
+        $records = ConnectionManager::getConnection($this->connection)->select($sql);
+
+        $result = [];
+
+        foreach ($records as $record)
+        {
+            $instance = new static();
+            
+            $result[] = $instance->fill($record);
+        }
+
+        return $result;
     }
 
     public function where(string $column, $value, string $condtion = '=') : Model
@@ -167,8 +234,21 @@ abstract class Model
                     ->select('*')
                     ->where($instance->primaryKey, $primaryKey);
 
-        return ConnectionManager::getInstance()->getConnection($instance->connection)
+        $record = ConnectionManager::getConnection($instance->connection)
             ->selectOne($query->toSql());
+
+        if ($record == null)
+            return null;
+
+        $instance->fill($record);
+        return $instance;
+    }
+
+    public static function findOrFail($primaryKey)
+    {
+        $instance = self::find($primaryKey);
+
+        if ($instance == null)
     }
 
     public static function new() : Model

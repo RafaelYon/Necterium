@@ -135,7 +135,7 @@ class QueryBuilder
 
     protected function protectedValue($value)
     {        
-        if (is_string($value))
+        if (!is_numeric($value))
             $value = '"' . $value . '"';
 
         if ($value == null)
@@ -145,12 +145,9 @@ class QueryBuilder
     }
 
     public function where(string $column, $value, string $condition = '=') : QueryBuilder
-    {
-        if (is_string($value))
-            $value = '"' . $value . '"';
-        
+    {        
         return $this->whereRaw(implode(' ', [
-            $this->protectedColumn($column), $condition, $value
+            $this->protectedColumn($column), $condition, $this->protectedValue($value)
         ]));
     }
 

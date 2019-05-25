@@ -19,11 +19,13 @@ class ConnectionManager extends Singleton
         return $this->connections[$name];
     }
 
-    public function getConnection(string $name = null)
+    public static function getConnection(string $name = null) : Connection
     {        
         if ($name == null)
             $name = config('database.default');
 
-        return $this->handlerConnectionRequisition($name);
+        $instance = self::getInstance();
+
+        return $instance->handlerConnectionRequisition($name);
     }
 }
