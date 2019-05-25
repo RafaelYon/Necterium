@@ -16,7 +16,9 @@ class PhoneController
     {
         $phone = Phone::findOrFail($request->getParameter(0));
 
-        dp($phone->toJson());
+        return view('phone.show', [
+            'phone' => $phone
+        ]);
     }
 
     public function create(Request $request)

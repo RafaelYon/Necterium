@@ -8,6 +8,6 @@ class UserController
 {
     public function index(Request $request)
     {
-        dp('USERS');
+        return view('home');
     }
 }

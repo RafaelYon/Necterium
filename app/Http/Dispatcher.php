@@ -16,6 +16,6 @@ class Dispatcher
         $request = new Request();
         $router = new Router($request);
 
-        $router->doAction();
+        return $router->doAction();
     }
 }

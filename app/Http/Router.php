@@ -5,6 +5,7 @@ namespace App\Http;
 use Exception;
 
 use App\Http\Request;
+use App\Http\Response;
 use App\Support\UrlHelper;
 
 use App\Exceptions\NotFoundException;
@@ -26,7 +27,17 @@ class Router
         $action = $parts[1];
 
         $controller = new $controller();
-        return $controller->{$action}($this->request);
+        $this->response($controller->{$action}($this->request));
+    }
+
+    private function response($response)
+    {
+        if (!($response instanceof Response))
+        {
+            $response = new Response($response); 
+        }
+
+        $response->response();
     }
 
     private function compareRouteAndRequest(string $route) : bool
@@ -76,7 +87,7 @@ class Router
         {
             if ($this->compareRouteAndRequest($route))
             {
-                return $this->executeControllerAction($controllerAction);
+                $this->executeControllerAction($controllerAction);
             }
         }
 

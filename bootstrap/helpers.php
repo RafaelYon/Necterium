@@ -40,3 +40,28 @@ function routes(string $type, string $method)
 {
     return config(implode('.', ['routes', $type, $method]));
 }
+
+/**
+ * Retorna uma nova instance de Response
+ * 
+ * @param string $content O conteúdo da respota
+ * @param int $code O código HTTP da resposta
+ */
+function response($content, int $code = 200) : App\Http\Response
+{
+    return new App\Http\Response($content, $code);
+}
+
+/**
+ * Cria uma respota usando uma view
+ * 
+ * @param string $keyView A chave para encontrar a view
+ * @param array $vars As variaveis que serão utilizadas pela view
+ * @param int $code O código HTTP da respota
+ */
+function view(string $keyView, array $vars = null, int $code = 200) : App\Http\Response
+{
+    $view = App\Builder\Views\View::make($keyView, $vars);
+
+    return response($view, $code);
+}
