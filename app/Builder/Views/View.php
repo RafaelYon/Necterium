@@ -24,7 +24,7 @@ class View
     {
         $pathParts = explode('.', $viewKey);
 
-        $this->viewFile = config('view.folder') 
+        $this->viewFile = config('app.resources.view_folder') 
             . \implode(DIRECTORY_SEPARATOR, $pathParts) . '.php';
 
         if (!file_exists($this->viewFile))
@@ -32,7 +32,7 @@ class View
     }
 
     public function render()
-    {
+    {        
         ob_start();
 
         if ($this->vars != null)

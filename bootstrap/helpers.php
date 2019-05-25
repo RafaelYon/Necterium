@@ -65,3 +65,19 @@ function view(string $keyView, array $vars = null, int $code = 200) : App\Http\R
 
     return response($view, $code);
 }
+
+/**
+ * Obtém o caminho para um arquivo publico.
+ */
+function publicPath(string $file = '') : string
+{
+    return config('app.public_path') . $file;
+}
+
+/**
+ * Requere o determinado resource.
+ */
+function resource(string $relativePath)
+{
+    require config('app.resources.folder') . $relativePath;
+}

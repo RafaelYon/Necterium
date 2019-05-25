@@ -1,0 +1,28 @@
+* {
+    --blue: rgb(8, 85, 161);
+    --orange: rgb(244, 131, 31);
+}
+
+a {
+    color: #0855a1;
+}
+
+a:focus {
+    color: #042f58;
+}
+
+li.active {
+    font-weight: bold;
+}
+
+.text-blue {
+    color: var(--blue) !important;
+}
+
+.text-orange {
+    color: var(--orange) !important;
+}
+
+a.text-orange:focus {
+    color: rgb(224, 112, 13) !important;
+}
