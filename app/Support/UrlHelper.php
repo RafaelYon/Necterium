@@ -2,14 +2,23 @@
 
 namespace App\Support;
 
+use App\Support\ArrayHelper;
+
 class UrlHelper
 {
     public const PART_DELIMITER = '/';
 
     private function __construct() { }
 
-    public static function getParts(string $uri)
+    public static function getParts(string $uri, bool $withEmpty = false)
     {
-        return explode(self::PART_DELIMITER, $uri);
+        $parts = explode(self::PART_DELIMITER, $uri);
+
+        if (!$withEmpty)
+        {
+            $parts = ArrayHelper::except($parts, ['']);
+        }
+
+        return $parts;
     }
 }

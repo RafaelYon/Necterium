@@ -55,7 +55,7 @@ class Connection
     }
 
     public function executeStatement(string $query, $bindings = []) : int
-    {
+    {        
         return $this->execute($query, $bindings)->rowCount();
     }
 

@@ -11,6 +11,8 @@ use App\Support\Fillable;
 use App\Database\QueryBuilder;
 use App\Database\ConnectionManager;
 
+use App\Exceptions\RecordNotFoundException;
+
 abstract class Model extends Fillable
 {    
     private $queryBuilder = null;
@@ -226,7 +228,7 @@ abstract class Model extends Fillable
         return $this;
     }
 
-    public static function find($primaryKey)
+    public static function findOrFail($primaryKey)
     {
         $instance = new static();
         
@@ -238,17 +240,24 @@ abstract class Model extends Fillable
             ->selectOne($query->toSql());
 
         if ($record == null)
-            return null;
+        {
+            throw new RecordNotFoundException(
+                $instance->getTableName(),
+                $query->getConditions()
+            );
+        }
 
         $instance->fill($record);
         return $instance;
     }
 
-    public static function findOrFail($primaryKey)
+    public static function find($primaryKey)
     {
-        $instance = self::find($primaryKey);
-
-        if ($instance == null)
+        try
+        {
+            return self::findOrFail($primaryKey);
+        }
+        catch (\Throwable $th) { }
     }
 
     public static function new() : Model

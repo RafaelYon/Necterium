@@ -27,7 +27,12 @@ class Request
 
     public function isApiRequest() : bool
     {   
-        return (UrlHelper::getParts($this->getRequestUri())[1] === self::API_URL_PREFIX);
+        $urlParts = UrlHelper::getParts($this->getRequestUri());
+
+        if (empty($urlParts))
+            return false;
+
+        return ($urlParts[0] === self::API_URL_PREFIX);
     }
 
     public function addParameter($parameter)
@@ -43,5 +48,10 @@ class Request
     public function getParameters()
     {
         return $this->parameters;
+    }
+
+    public function getParameter(int $index)
+    {
+        return $this->parameters[$index];
     }
 }

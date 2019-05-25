@@ -31,6 +31,6 @@ class ArrayHelper
                 unset($arr[$key]);
         }
 
-        return $arr;
+        return array_values($arr);
     }
 }

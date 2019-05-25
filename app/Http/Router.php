@@ -29,19 +29,10 @@ class Router
         return $controller->{$action}($this->request);
     }
 
-    private function checkRouteSplit($parts, string $route)
-    {
-        if (empty($parts))
-            throw new Exception('A rota "' . $route . '" não pode ser separada corretamente.');
-    }
-
     private function compareRouteAndRequest(string $route) : bool
     {
         $routeParts = UrlHelper::getParts($route);
         $requestParts = UrlHelper::getParts($this->request->getRequestUri(false));
-
-        $this->checkRouteSplit($routeParts, $route);
-        $this->checkRouteSplit($requestParts, $this->request->getRequestUri(false));
 
         $requestLenght = count($requestParts);
         $routeLength = count($routeParts);

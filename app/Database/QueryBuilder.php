@@ -135,7 +135,7 @@ class QueryBuilder
 
     protected function protectedValue($value)
     {        
-        if (!is_numeric($value))
+        if (is_string($value))
             $value = '"' . $value . '"';
 
         if ($value == null)
@@ -285,5 +285,10 @@ class QueryBuilder
         }
 
         return $sql;
+    }
+
+    public function getConditions() : array
+    {
+        return $this->conditions;
     }
 }
