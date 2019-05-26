@@ -73,3 +73,14 @@ function publicPath(string $file = '') : string
 {
     return config('app.public_path') . $file;
 }
+
+/**
+ * Obtém o caminho para um arquivo resource
+ */
+function resourcePath(string $resourceKey)
+{
+    $pathParts = explode('.', $resourceKey);
+
+    return config('app.resources.folder')
+            . implode(DIRECTORY_SEPARATOR, $pathParts) . '.php';
+}

@@ -3,6 +3,8 @@
 return [
     'name' => 'Agenda Telefônica',
 
+    'debug' => true,
+
     'resources' => [
         'folder'        => ROOT_FOLDER . 'resources/',
         'view_folder'   => ROOT_FOLDER . 'resources/views/',

@@ -3,6 +3,7 @@
 return [
     'template' => [
         'extends' => '',
+        'var' => '',
         'section' => '',
     ],
 ];

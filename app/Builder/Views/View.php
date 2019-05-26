@@ -31,6 +31,10 @@ class View
 
     private function checkChache(string $viewFile, string $cacheFile)
     {
+        // Em desenvolvimento sempre "recompile" a view
+        if (config('app.debug'))
+            return false;
+        
         return file_exists($cacheFile);
     }
 
@@ -80,9 +84,17 @@ class View
             return $fileContent;
         }
 
+        $fullCommands = $matchCommands[0];
         $commands = $matchCommands[2];
 
-        dp($commands);
+        dp([
+            $fullCommands, $commands
+        ]);
+
+        foreach ($commands as $command)
+        {
+
+        }
     }
 
     private function handlerFile(string $viewKey)
