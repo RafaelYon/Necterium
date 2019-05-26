@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Builder\Views\View;
+use App\Http\Request;
 
 class Response
 {
@@ -23,10 +24,18 @@ class Response
         header('Content-Type: ' . $this->contentType, true, $this->code);
     }
 
-    public function json()
+    public function json() : Response
     {
         $this->contentType = 'application/json';
         $this->content = json_encode($this->content);
+
+        return $this;
+    }
+
+    public function setRequest(Request $request)
+    {
+        if ($this->content instanceof View)
+            $this->content->addVar('request', $request);
     }
 
     public function response() : string

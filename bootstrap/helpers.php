@@ -73,11 +73,3 @@ function publicPath(string $file = '') : string
 {
     return config('app.public_path') . $file;
 }
-
-/**
- * Requere o determinado resource.
- */
-function resource(string $relativePath)
-{
-    require config('app.resources.folder') . $relativePath;
-}

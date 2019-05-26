@@ -37,6 +37,8 @@ class Router
             $response = new Response($response); 
         }
 
+        $response->setRequest($this->request);
+
         $response->response();
     }
 

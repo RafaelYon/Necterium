@@ -3,6 +3,7 @@
 namespace App\Builder\Views;
 
 use App\Exceptions\ViewNotFoundException;
+use App\Exceptions\UnableOpenFileException;
 
 class View
 {
@@ -16,19 +17,103 @@ class View
 
     private function __construct(string $viewKey, array $vars = null)
     {
-        $this->findFile($viewKey);
+        $this->handlerFile($viewKey);
         $this->vars = $vars;
     }
 
-    private function findFile(string $viewKey)
+    private function getViewPath($folderKey, $viewKey)
     {
         $pathParts = explode('.', $viewKey);
+        
+        return config('app.resources.' . $folderKey)
+            . implode(DIRECTORY_SEPARATOR, $pathParts) . '.php';
+    }
 
-        $this->viewFile = config('app.resources.view_folder') 
-            . \implode(DIRECTORY_SEPARATOR, $pathParts) . '.php';
+    private function checkChache(string $viewFile, string $cacheFile)
+    {
+        if (!file_exists($cacheFile))
+            return false;
+        
+        $viewModTimestamp = filectime($viewFile);
+        $cacheModTimestamp = filectime($cacheFile);
 
-        if (!file_exists($this->viewFile))
-            throw new ViewNotFoundException($viewKey, $this->viewFile);
+        return ($viewModTimestamp < $cacheModTimestamp);
+    }
+
+    private function createSubfoldersIfNeed(string $fileKey)
+    {
+        $paths = explode('.', $fileKey);
+
+        $path = config('app.resources.cache_folder');
+
+        for ($i = 0, $len = count($paths) - 1; $i < $len; $i++)
+        {
+            $path .= $paths[$i] . DIRECTORY_SEPARATOR;
+
+            @mkdir($path);
+        }
+    }
+
+    private function writeCacheFile(string $cacheKey, string $cacheFilePath, string $content)
+    {
+        $this->createSubfoldersIfNeed($cacheKey);
+        
+        $file = fopen($cacheFilePath, 'w+');
+
+        if ($file === false)
+        {
+            throw new UnableOpenFileException($cacheFilePath, 'w+');
+        }
+        
+        fwrite($file, $content);
+
+        fclose($file);
+    }
+
+    private function constructView(string $viewFile)
+    {
+        $fileContent = file_get_contents($viewFile);
+
+        $matchCommands = null;
+
+        preg_match_all('/({{)(([a-z])+(=|:|\'|.)*([a-z])*)+(}})/mi', $fileContent, 
+            $matchCommands, PREG_OFFSET_CAPTURE);
+
+        if (empty($matchCommands) || empty($matchCommands[2]))
+        {        
+            return $fileContent;
+        }
+
+        $commands = $matchCommands[2];
+
+        dp($commands);
+    }
+
+    private function handlerFile(string $viewKey)
+    {
+        $viewFile = $this->getViewPath('view_folder', $viewKey);
+        $cacheFile = $this->getViewPath('cache_folder', $viewKey);
+
+        if (!file_exists($viewFile))
+            throw new ViewNotFoundException($viewKey, $viewFile);
+
+        if (!$this->checkChache($viewFile, $cacheFile))
+        {
+            $this->writeCacheFile(
+                $viewKey,
+                $cacheFile,
+                $this->constructView($viewFile)
+            );
+        }
+        else
+            dp('Cache esta atualizado');
+
+        $this->viewFile = $cacheFile;
+    }
+
+    public function addVar($key, $var)
+    {
+        $this->vars[$key] = $var;
     }
 
     public function render()

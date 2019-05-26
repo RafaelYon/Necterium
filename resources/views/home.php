@@ -1,8 +1,8 @@
-<?php resource('views/layouts/head.php'); ?>
+{{extends=layout.app}}
 
-<title>Home</title>
+{{var=title:'Home'}}
 
-<?php resource('views/layouts/body.php'); ?>
+{{section=content}}
 
 <div class="container">
     <div class="row p-5">
@@ -20,6 +20,4 @@
     </div>
 </div>
 
-<?php resource('views/layouts/scripts.php'); ?>
-
-<?php resource('views/layouts/end.php'); ?>
+{{endsection}}
