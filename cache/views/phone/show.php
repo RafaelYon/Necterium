@@ -1,1 +1,0 @@
-O número é <?=$phone->number?> OK!

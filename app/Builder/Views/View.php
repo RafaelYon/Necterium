@@ -31,13 +31,7 @@ class View
 
     private function checkChache(string $viewFile, string $cacheFile)
     {
-        if (!file_exists($cacheFile))
-            return false;
-        
-        $viewModTimestamp = filectime($viewFile);
-        $cacheModTimestamp = filectime($cacheFile);
-
-        return ($viewModTimestamp < $cacheModTimestamp);
+        return file_exists($cacheFile);
     }
 
     private function createSubfoldersIfNeed(string $fileKey)
@@ -45,6 +39,8 @@ class View
         $paths = explode('.', $fileKey);
 
         $path = config('app.resources.cache_folder');
+
+        @mkdir($path);
 
         for ($i = 0, $len = count($paths) - 1; $i < $len; $i++)
         {
