@@ -8,7 +8,7 @@ use App\Builder\Views\Commands\Command;
 
 use App\Builder\Views\TemplateCompiler;
 
-class ExtendsCommand extends Command implements CommandContract, AwaitableCommandContract
+class SectionCommand extends Command implements CommandContract, AwaitableCommandContract
 {    
     private $varKey;
 
@@ -25,11 +25,14 @@ class ExtendsCommand extends Command implements CommandContract, AwaitableComman
     public function finish(int $endCommandPosition)
     {
         $fullCommand = '{{section='.$this->varKey.'}}';
-        $fullCommandLength = str_len($fullCommand);
+        $fullCommandLength = strlen($fullCommand);
 
-        $commandPosition = strpos($this->compiler->getResultContent(), $fullCommand);
+        $commandPosition = strpos($this->compiler->getResultContent(), $fullCommand) + $fullCommandLength;
         $endCommandPosition -= 3; // Fix command position
 
+        $section = \substr($this->compiler->getResultContent(), 
+            $commandPosition, $endCommandPosition - $commandPosition);
         
+        $this->compiler->setVar($this->varKey, $section);
     }
 }

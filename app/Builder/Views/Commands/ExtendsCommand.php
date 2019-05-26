@@ -11,12 +11,8 @@ class ExtendsCommand extends Command implements CommandContract
 {    
     public function handler(string $parameter)
     {
-        $this->compiler->addNextTemplateCompile(
-            '{{extends='.$parameter.'}}',
-            new TemplateCompiler(
-                resourcePath('views' . $parameter),
-                $this->compiler->getVars()
-            )
+        $this->compiler->setNextTemplateToCompile(
+            resourcePath('views.' . $parameter)
         );
     }
 }

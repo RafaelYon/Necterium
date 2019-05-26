@@ -5,6 +5,8 @@ namespace App\Builder\Views;
 use App\Exceptions\ViewNotFoundException;
 use App\Exceptions\UnableOpenFileException;
 
+use App\Builder\Views\TemplateCompiler;
+
 class View
 {
     private $viewFile;
@@ -72,29 +74,8 @@ class View
 
     private function constructView(string $viewFile)
     {
-        $fileContent = file_get_contents($viewFile);
-
-        $matchCommands = null;
-
-        preg_match_all('/({{)(([a-z])+(=|:|\'|.)*([a-z])*)+(}})/mi', $fileContent, 
-            $matchCommands, PREG_OFFSET_CAPTURE);
-
-        if (empty($matchCommands) || empty($matchCommands[2]))
-        {        
-            return $fileContent;
-        }
-
-        $fullCommands = $matchCommands[0];
-        $commands = $matchCommands[2];
-
-        dp([
-            $fullCommands, $commands
-        ]);
-
-        foreach ($commands as $command)
-        {
-
-        }
+        $compiler = new TemplateCompiler($viewFile);
+        return $compiler->compile();
     }
 
     private function handlerFile(string $viewKey)

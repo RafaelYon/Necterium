@@ -2,8 +2,9 @@
 
 return [
     'template' => [
-        'extends' => '',
-        'var' => '',
-        'section' => '',
+        'extends'   => App\Builder\Views\Commands\ExtendsCommand::class,
+        'var'       => \App\Builder\Views\Commands\VarCommand::class,
+        'section'   => \App\Builder\Views\Commands\SectionCommand::class,
+        'yield'     => \App\Builder\Views\Commands\YieldCommand::class,
     ],
 ];

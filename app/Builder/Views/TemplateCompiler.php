@@ -14,7 +14,7 @@ class TemplateCompiler
 
     private $waitingCommands = [];
 
-    private $nextTemplateCompilers = [];
+    private $nextTemplate = null;
 
     public function __construct($filePath, $vars = [])
     {
@@ -22,6 +22,8 @@ class TemplateCompiler
         $this->resultContent = $this->originalContent;
 
         $this->vars = $vars;
+
+        $this->findCommands();
     }
 
     private function findCommands()
@@ -38,12 +40,36 @@ class TemplateCompiler
         $this->commands = $matchCommands[2];
     }
 
-    public function compile()
+    public function compile() : string
     {
         foreach ($this->commands as $command)
         {
+            $parts = explode('=', $command[0]);
 
+            if (isset($this->waitingCommands[$parts[0]]))
+            {
+                $this->waitingCommands[$parts[0]]->finish($command[1]);
+            }
+            else
+            {
+                $class = config('view.template.'.$parts[0]);
+
+                $handler = $class::create($this);
+                $handler->handler($parts[1]);
+            }
         }
+
+        if ($this->nextTemplate == null)
+        {
+            return $this->getResultContent();
+        }
+
+        $nextCompiler = new TemplateCompiler(
+            $this->nextTemplate,
+            $this->vars
+        );
+
+        return $nextCompiler->compile();
     }
 
     public function getOriginalContent()
@@ -76,6 +102,14 @@ class TemplateCompiler
         return $this->vars;
     }
 
+    public function getVar($key)
+    {
+        if (!isset($this->vars[$key]))
+            return '';
+
+        return $this->vars[$key];
+    }
+
     public function setVar($key, $value)
     {
         $this->vars[$key] = $value;
@@ -91,8 +125,8 @@ class TemplateCompiler
         $this->waitingCommands[$commandKey] = $commandHandler;
     }
 
-    public function addNextTemplateCompile(string $replaceKey, TemplateCompiler $compiler)
+    public function setNextTemplateToCompile(string $path)
     {
-        $this->nextTemplateCompilers[$replaceKey] = $compiler;
+        $this->nextTemplate = $path;
     }
 }

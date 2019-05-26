@@ -2,11 +2,9 @@
 
 namespace App\Builder\Views\Commands;
 
-use App\Builder\View\TemplateCompiler;
-
 interface CommandContract
 {
-    public static function create(TemplateCompiler $compiler) : CommandContract;
+    public static function create($compiler) : CommandContract;
     
     public function handler(string $parameter);
 }

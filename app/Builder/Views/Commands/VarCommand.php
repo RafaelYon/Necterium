@@ -7,7 +7,7 @@ use App\Builder\Views\Commands\Command;
 
 use App\Builder\Views\TemplateCompiler;
 
-class ExtendsCommand extends Command implements CommandContract
+class VarCommand extends Command implements CommandContract
 {    
     public function handler(string $parameter)
     {
@@ -15,7 +15,7 @@ class ExtendsCommand extends Command implements CommandContract
 
         if (is_string($parts[1]))
         {
-            $parts[1] = str_replace("'", $parts[1]);
+            $parts[1] = str_replace("'", '', $parts[1]);
         }
 
         $this->compiler->setVar($parts[0], $parts[1]);

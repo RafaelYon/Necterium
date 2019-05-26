@@ -13,7 +13,7 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-lg shadow-sm mb-2">
-            <a class="navbar-brand text-orange" href="/"><?php config('app.name'); ?></a>
+            <a class="navbar-brand text-orange" href="/"><?=config('app.name')?></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" 
                 data-target="#navbar" >
                 <span class="navbar-toggler-icon"></span>
