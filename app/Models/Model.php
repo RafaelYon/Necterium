@@ -218,13 +218,33 @@ abstract class Model extends Fillable
 
     public function where(string $column, $value, string $condtion = '=') : Model
     {
-        $query =  $this->getQueryBuilder();
+        $this->getQueryBuilder();
 
-        if ($query->isEmpty())
-            $query->select('*');
+        if ($this->queryBuilder->isEmpty())
+            $this->queryBuilder->select('*');
 
-        $query->where($column, $value, $condtion);
+        $this->queryBuilder->where($column, $value, $condtion);
         
+        return $this;
+    }
+
+    public function firstOrFail()
+    {
+        $query = $this->getQueryBuilder(false);
+
+        $record = ConnectionManager::getConnection($this->connection)
+                    ->selectOne($query->toSql());
+                    
+        if ($record == null)
+        {
+            throw new RecordNotFoundException(
+                $this->getTableName(),
+                $query->getConditions()
+            );
+        }
+
+        $this->fill($record);
+
         return $this;
     }
 
@@ -232,23 +252,11 @@ abstract class Model extends Fillable
     {
         $instance = new static();
         
-        $query = $instance->getQueryBuilder(false)
-                    ->select('*')
-                    ->where($instance->primaryKey, $primaryKey);
+        $instance->queryBuilder = $instance->getQueryBuilder()
+                                    ->select('*')
+                                    ->where($instance->primaryKey, $primaryKey);
 
-        $record = ConnectionManager::getConnection($instance->connection)
-            ->selectOne($query->toSql());
-
-        if ($record == null)
-        {
-            throw new RecordNotFoundException(
-                $instance->getTableName(),
-                $query->getConditions()
-            );
-        }
-
-        $instance->fill($record);
-        return $instance;
+        return $instance->firstOrFail();
     }
 
     public static function find($primaryKey)
@@ -258,6 +266,8 @@ abstract class Model extends Fillable
             return self::findOrFail($primaryKey);
         }
         catch (\Throwable $th) { }
+
+        return null;
     }
 
     public static function new() : Model

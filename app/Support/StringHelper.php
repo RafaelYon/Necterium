@@ -34,4 +34,9 @@ class StringHelper
 
         return $result;
     }
+
+    public static function XSSClear(string $data)
+    {
+        return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+    }
 }
