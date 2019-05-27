@@ -28,7 +28,10 @@
                 <ul class="navbar-nav">
                     <?php if (auth()::check()): ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
+                            <form method="POST" action="/logout">
+                                <?=inputCsrf()?>
+                                <button type="submit" class="btn nav-link">Logout</button>
+                            </form>
                         </li>
                     <?php else: ?>
                         <li class="nav-item">

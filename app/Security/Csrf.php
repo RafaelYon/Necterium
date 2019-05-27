@@ -11,14 +11,25 @@ class Csrf
     
     private function __construct() { }
 
-    public static function create() : string
-    {        
+    private static function gerateIfNeeed()
+    {
+        if (!empty(Session::get(self::TOKEN_KEY)) && 
+            Session::get(self::TIME_KEY) + config('security.csrf.expires') >= time())
+        {
+            return;
+        }
+        
         $token = sha1(uniqid(rand(), true) . time());
         
         Session::set(self::TOKEN_KEY, $token);
         Session::set(self::TIME_KEY, time());
+    }
+    
+    public static function create() : string
+    {        
+        self::gerateIfNeeed();
 
-        return $token;
+        return Session::get(self::TOKEN_KEY);
     }
 
     public static function check($token) : bool

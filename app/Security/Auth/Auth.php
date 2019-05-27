@@ -99,4 +99,9 @@ class Auth
             return false;
         }
     }
+
+    public static function logout()
+    {
+        Session::remove(config(self::SESSION_KEY));
+    }
 }

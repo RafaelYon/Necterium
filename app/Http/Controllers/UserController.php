@@ -17,4 +17,15 @@ class UserController extends Controller
     {
         dp(Auth::user());
     }
+
+    public function logout(Request $request)
+    {
+        $request->validate([
+            'csrf'  => 'required|csrf'
+        ]);
+        
+        Auth::logout();
+
+        redirect('/login');
+    }
 }

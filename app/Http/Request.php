@@ -94,10 +94,15 @@ class Request
         }
         catch (ValidationException $ex)
         {
-            Session::setErrors($ex->getErrors());
-            Session::setOldInput(($this->getRequestMethod() == 'POST') ? $_POST : $_GET);
-            
-            redirect(Session::pop('previous_url'));
+            $this->backWithError($ex->getErrors());
         }
+    }
+
+    public function backWithErrors(array $errors)
+    {
+        Session::setErrors($errors);
+        Session::setOldInput(($this->getRequestMethod() == 'POST') ? $_POST : $_GET);
+        
+        redirect(Session::pop('previous_url'));
     }
 }
