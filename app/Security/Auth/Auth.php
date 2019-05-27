@@ -8,13 +8,16 @@ use App\Models\User;
 
 class Auth
 {
-    private const SESSION_KEY = 'securitu.auth.session_key';
+    private const SESSION_KEY = 'security.auth.session_key';
     
     private $id;
     private $user;
 
-    private function __construct(User $user)
+    private function __construct(User $user = null)
     {
+        if ($user == null)
+            return;
+
         $this->id = $user->id;
         $this->user = $user;
     }
@@ -34,6 +37,8 @@ class Auth
 
         if (empty($instance))
             return new static();
+
+        return $instance;
     }
 
     public static function user()
@@ -43,15 +48,12 @@ class Auth
         
         $instance = self::getCurrent();
 
-        return $instance->user();
+        return $instance->user;
     }
 
     public static function check() : bool
     {
         $instance = self::getCurrent();
-
-        if (empty($instance))
-            return false;
 
         if (is_null($instance->id))
             return false;
@@ -70,6 +72,14 @@ class Auth
         return true;
     }
 
+    public static function loginDirect(User $user)
+    {
+        Session::set(
+            config(self::SESSION_KEY),
+            new Auth($user)
+        );
+    }
+
     public static function attempt($email, $password) : bool
     {
         try
@@ -79,11 +89,8 @@ class Auth
 
             if (!Hash::check($password, $user->password))
                 return false;
-            
-            Session::set(
-                config(self::SESSION_KEY),
-                new Auth($user)
-            );
+          
+            self::loginDirect($user);
 
             return true;
         }

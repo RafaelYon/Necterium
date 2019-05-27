@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Request;
 use App\Security\Hash;
 use App\Models\User;
+use App\Security\Auth\Auth;
 
-class RegisterController
+class RegisterController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(\App\Http\Middlewares\GuestMiddleware::class);
+    }
+
     public function index(Request $request)
     {                
         return view('register');
@@ -17,7 +24,7 @@ class RegisterController
     {
         $data = $request->validate([
             'name'      => 'required|string|max:256',
-            'email'     => 'required|max:254|unique:users,email',
+            'email'     => 'required|email|max:254|unique:users,email',
             'password'  => 'required|string|min:8',
             'csrf'      => 'required|csrf'
         ]);
@@ -29,6 +36,8 @@ class RegisterController
 
         $user->save();
 
-        dp($user);
+        Auth::loginDirect($user);
+
+        redirect('/home');
     }
 }

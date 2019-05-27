@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Request;
 use App\Models\Phone;
 
-class PhoneController
+class PhoneController extends Controller
 {
     public function index(Request $request)
     {

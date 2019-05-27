@@ -27,7 +27,9 @@ class Router
         $action = $parts[1];
 
         $controller = new $controller();
-        $this->response($controller->{$action}($this->request));
+        $this->response(
+            $controller->dispatch($action, $this->request)
+        );
     }
 
     private function response($response)

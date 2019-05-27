@@ -3,8 +3,10 @@
 return [
     'web' => [
         'GET' => [
-            '/' => 'UserController@index',
+            '/' => 'WelcomeController@index',
             '/register' => 'RegisterController@index',
+            '/home'     => 'UserController@index',
+
             '/phone' => 'PhoneController@index',
             '/phone/{^(([1-9])([0-9]*))$}' => 'PhoneController@show'
         ],

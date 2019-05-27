@@ -10,7 +10,7 @@
 function dp ($data)
 {
     echo '<pre>';
-    print_r($data);
+    var_dump($data);
     die();
 }
 
@@ -106,4 +106,9 @@ function inputCsrf()
 function session()
 {
     return App\Security\Session::class;
+}
+
+function auth()
+{
+    return App\Security\Auth\Auth::class;
 }

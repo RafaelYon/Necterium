@@ -26,12 +26,18 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Login</a>
-                    </li>
-                    <li class="nav-item <?=($request->getRequestUri() == '/register') ? 'active' : ''?>">
-                        <a class="nav-link" href="/register">Registro</a>
-                    </li>
+                    <?php if (auth()::check()): ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Login</a>
+                        </li>
+                        <li class="nav-item <?=($request->getRequestUri() == '/register') ? 'active' : ''?>">
+                            <a class="nav-link" href="/register">Registro</a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </nav>
