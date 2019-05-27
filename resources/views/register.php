@@ -12,6 +12,9 @@
                 <form method="POST" action="/register">
                     <?=inputCsrf()?>
                     <div class="card-body">
+                        <div class="text-danger">
+                            {{show-validation-errors}}
+                        </div>
                         <div class="form-group">
                             <label for="name">Nome:</label>
                             <input class="form-control" type="text" id="name" name="name" maxlength="256" required>
@@ -22,7 +25,7 @@
                         </div>
                         <div class="form-group">
                             <label for="password">Senha:</label>
-                            <input class="form-control" type="password" id="password" name="password"  required>
+                            <input class="form-control" type="password" id="password" name="password" required>
                         </div>
                     </div>
                     <div class="card-footer">

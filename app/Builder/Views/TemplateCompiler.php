@@ -54,6 +54,9 @@ class TemplateCompiler
             {
                 $class = config('view.template.'.$parts[0]);
 
+                if (!isset($parts[1]))
+                    $parts[1] = null;
+
                 $handler = $class::create($this);
                 $handler->handler($parts[1]);
             }

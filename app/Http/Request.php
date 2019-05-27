@@ -4,6 +4,8 @@ namespace App\Http;
 
 use App\Support\UrlHelper;
 use App\Security\Session;
+use App\Validation\Validator;
+use App\Exceptions\ValidationException;
 
 class Request
 {
@@ -14,6 +16,11 @@ class Request
     public function __construct()
     {
         Session::start();
+    }
+
+    public function __destruct()
+    {
+        Session::set('previous_url', $this->getRequestUri());
     }
 
     public function getRequestUri(bool $withAPIPrefix = true) : string
@@ -73,12 +80,24 @@ class Request
 
     public function getInput($key)
     {
+        if ($this->getRequestMethod() == 'POST')
+            return $this->getPost($key);
+
+        return $this->getGet($key);
+    }
+
+    public function validate(array $rules) : array
+    {
         try
         {
-            return $this->getPost($key);
-        } 
-        catch (\Throwable $th) {
-            return $this->getGet($key);
+            return Validator::verify($rules, $this);
+        }
+        catch (ValidationException $ex)
+        {
+            Session::setErrors($ex->getErrors());
+            Session::setOldInput(($this->getRequestMethod() == 'POST') ? $_POST : $_GET);
+            
+            redirect(Session::pop('previous_url'));
         }
     }
 }

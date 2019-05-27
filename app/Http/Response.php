@@ -49,4 +49,11 @@ class Response
 
         exit();
     }
+
+    public static function redirect(string $url, bool $permanent, bool $found = true)
+    {
+        header('Location: '.$url, true, $permanent ? 301 : $found ? 302 : 303);
+        
+        exit();
+    }
 }

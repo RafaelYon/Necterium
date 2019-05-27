@@ -29,7 +29,7 @@ class Session
 
     public static function get($key)
     {
-        return $_SESSION[$key];
+        return @$_SESSION[$key];
     }
 
     public static function pop($key)
@@ -38,5 +38,48 @@ class Session
         self::remove($key);
 
         return $result;
+    }
+
+    public static function setErrors(array $errors)
+    {
+        self::set('errors', $errors);
+    }
+
+    public static function getErrors()
+    {
+        return self::get('errors');
+    }
+
+    public static function hasErrors() : bool
+    {
+        return (!empty(self::getErrors()));
+    }
+
+    public static function popArrayData($keyOne, $keyTwo)
+    {
+        $data = $_SESSION[$keyOne][$keyTwo];
+        unset($_SESSION[$keyOne][$keyTwo]);
+
+        return $data;
+    }
+
+    public static function popErrors()
+    {
+        return self::pop('errors');
+    }
+
+    public static function popError($key)
+    {
+        return self::popArrayData('errors', $key);
+    }
+
+    public static function setOldInput(array $input)
+    {
+        self::set('old_input', $input);
+    }
+
+    public static function popOldInput($key)
+    {
+        return self::popArrayData('old_input', $key);
     }
 }

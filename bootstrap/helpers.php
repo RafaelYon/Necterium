@@ -66,6 +66,11 @@ function view(string $keyView, array $vars = null, int $code = 200) : App\Http\R
     return response($view, $code);
 }
 
+function redirect(string $url, bool $permanent = false, bool $found = true)
+{
+    App\Http\Response::redirect($url, $permanent, $found);
+}
+
 /**
  * Obtém o caminho para um arquivo publico.
  */
@@ -96,4 +101,9 @@ function csrf()
 function inputCsrf()
 {
     return '<input type="hidden" name="csrf-token" value="' . csrf() . '">';
+}
+
+function session()
+{
+    return App\Security\Session::class;
 }

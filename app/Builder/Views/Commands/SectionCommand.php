@@ -28,7 +28,7 @@ class SectionCommand extends Command implements CommandContract, AwaitableComman
         $fullCommandLength = strlen($fullCommand);
 
         $commandPosition = strpos($this->compiler->getResultContent(), $fullCommand) + $fullCommandLength;
-        $endCommandPosition -= 3; // Fix command position
+        $endCommandPosition = strpos($this->compiler->getResultContent(), '{{{{endsection}}}}') -  3; // Fix command position
 
         $section = \substr($this->compiler->getResultContent(), 
             $commandPosition, $endCommandPosition - $commandPosition);
