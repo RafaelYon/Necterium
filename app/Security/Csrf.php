@@ -23,16 +23,16 @@ class Csrf
 
     public static function check(string $token) : bool
     {
-        $storagedToken = Session::pop(TOKEN_KEY);
+        $storagedToken = Session::get(self::TOKEN_KEY);
 
         if (empty($token))
             return false;
 
-        $time = Session::pop(TIME_KEY);
+        $time = Session::get(self::TIME_KEY);
 
         if (empty($time))
             return false;
 
-        return ($storagedToken === $token && $time + config('security.csrf.expires') <= time());
+        return ($storagedToken === $token && $time + config('security.csrf.expires') >= time());
     }
 }

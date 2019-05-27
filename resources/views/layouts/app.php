@@ -22,15 +22,15 @@
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item <?=($request->getRequestUri() == '/') ? 'active' : ''?>">
-                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link" href="/">Home</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="#">Login</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Registro</a>
+                    <li class="nav-item <?=($request->getRequestUri() == '/register') ? 'active' : ''?>">
+                        <a class="nav-link" href="/register">Registro</a>
                     </li>
                 </ul>
             </div>

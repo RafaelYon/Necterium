@@ -84,3 +84,16 @@ function resourcePath(string $resourceKey)
     return config('app.resources.folder')
             . implode(DIRECTORY_SEPARATOR, $pathParts) . '.php';
 }
+
+/**
+ * Gera um token csrf
+ */
+function csrf()
+{
+    return App\Security\Csrf::create();
+}
+
+function inputCsrf()
+{
+    return '<input type="hidden" name="csrf-token" value="' . csrf() . '">';
+}

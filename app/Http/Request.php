@@ -3,12 +3,18 @@
 namespace App\Http;
 
 use App\Support\UrlHelper;
+use App\Security\Session;
 
 class Request
 {
     public const API_URL_PREFIX = 'api';
 
     private $parameters = array();
+
+    public function __construct()
+    {
+        Session::start();
+    }
 
     public function getRequestUri(bool $withAPIPrefix = true) : string
     {
@@ -53,5 +59,26 @@ class Request
     public function getParameter(int $index)
     {
         return $this->parameters[$index];
+    }
+
+    public function getPost($key)
+    {
+        return @$_POST[$key];
+    }
+
+    public function getGet($key)
+    {
+        return @$_GET[$key];
+    }
+
+    public function getInput($key)
+    {
+        try
+        {
+            return $this->getPost($key);
+        } 
+        catch (\Throwable $th) {
+            return $this->getGet($key);
+        }
     }
 }
