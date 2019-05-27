@@ -6,8 +6,13 @@
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/app.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
 
         {{yield=head}}
+
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
         <title><?=config('app.name')?> - {{yield=title}}</title>
     </head>
@@ -21,8 +26,8 @@
 
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item <?=($request->getRequestUri() == '/') ? 'active' : ''?>">
-                        <a class="nav-link" href="/">Home</a>
+                    <li class="nav-item <?=($request->getRequestUri() == '/home') ? 'active' : ''?>">
+                        <a class="nav-link" href="/home">Home</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
@@ -35,7 +40,7 @@
                         </li>
                     <?php else: ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Login</a>
+                            <a class="nav-link" href="/login">Login</a>
                         </li>
                         <li class="nav-item <?=($request->getRequestUri() == '/register') ? 'active' : ''?>">
                             <a class="nav-link" href="/register">Registro</a>
@@ -47,9 +52,5 @@
 
         {{yield=content}}
 
-        <script src="js/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        
-        {{yield=scripts}}
     </body>
 </html>

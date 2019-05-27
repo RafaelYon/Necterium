@@ -197,7 +197,7 @@ abstract class Model extends Fillable
                     ->executeStatement($query->toSql()) > 0);
     }
 
-    public function get() : array
+    public function get()
     {
         if ($this->queryBuilder == null)
             throw new Exception('Model query is empty.');
@@ -207,13 +207,16 @@ abstract class Model extends Fillable
 
         $records = ConnectionManager::getConnection($this->connection)->select($sql);
 
-        $result = [];
+        $result = array();
 
-        foreach ($records as $record)
+        $instance = null;
+
+        for ($i = 0, $len = count($records); $i < $len; $i++)
         {
             $instance = new static();
+            $instance->fill($records[$i]);
             
-            $result[] = $instance->fill($record);
+            $result[] = $instance;
         }
 
         return $result;
@@ -227,6 +230,18 @@ abstract class Model extends Fillable
             $this->queryBuilder->select('*');
 
         $this->queryBuilder->where($column, $value, $condtion);
+        
+        return $this;
+    }
+
+    public function whereRaw(string $condition) : Model
+    {
+        $this->getQueryBuilder();
+
+        if ($this->queryBuilder->isEmpty())
+            $this->queryBuilder->select('*');
+
+        $this->queryBuilder->whereRaw($condition);
         
         return $this;
     }

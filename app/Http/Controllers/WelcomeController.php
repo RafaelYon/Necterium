@@ -9,6 +9,6 @@ class WelcomeController extends Controller
 {
     public function index(Request $request)
     {
-        return view('home');
+        return view('welcome');
     }
 }

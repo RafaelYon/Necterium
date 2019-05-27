@@ -6,18 +6,32 @@
 
 <div class="container">
     <div class="row p-5">
-        <div class="col-md-12 text-center">        
-            <h1 class="text-orange"><?=config('app.name')?></h1>
-            <p>
-                Crie, edite e exclua seus contatos.
-                <br>
-                A ferramente de gerenciamento completo para seus contatos
-            </p>
-        </div>
-        <div class="col-md-6">
-
+        <div class="col-md-12">
+            <table id="phones" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Criado em</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#phones').DataTable( {
+            "ajax": {
+                "url": "api/phone",
+                "type": "GET",
+            },
+            "columns": [
+                { "data": "number" },
+                { "data": "created_at" }
+            ]
+        } );
+    } );
+</script>
 
 {{endsection}}

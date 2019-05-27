@@ -21,7 +21,7 @@ return [
 
     'api' => [
         'GET' => [
-
+            '/phone' => 'PhoneController@getAllContacts'
         ],
         'POST' => [
             

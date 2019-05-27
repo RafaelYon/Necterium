@@ -12,6 +12,7 @@ class Request
     public const API_URL_PREFIX = 'api';
 
     private $parameters = array();
+    private $queryParametes = array();
 
     public function __construct()
     {
@@ -23,12 +24,25 @@ class Request
         Session::set('previous_url', $this->getRequestUri());
     }
 
-    public function getRequestUri(bool $withAPIPrefix = true) : string
+    public function getRequestUri(bool $withAPIPrefix = true, bool $withParamenter = false) : string
     {
         $uri = $_SERVER['REQUEST_URI'];
 
         if (!$withAPIPrefix)
             $uri = str_replace(self::API_URL_PREFIX, '', $uri);
+
+        if (!$withParamenter)
+        {
+            $queryPos = strpos($uri, '?');
+
+            if ($queryPos !== false)
+            {
+                $param = substr($uri, $queryPos + 1);
+                $this->queryParametes =  explode('&', $param);
+                
+                $uri = substr($uri, 0, $queryPos);
+            }
+        }
 
         return $uri;
     }

@@ -15,7 +15,9 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        dp(Auth::user());
+        $user = Auth::user();
+
+        return view('home');
     }
 
     public function logout(Request $request)

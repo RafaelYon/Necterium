@@ -14,6 +14,6 @@ class NotFoundException extends Exception
     {
         $this->request = $request;
 
-        parent::__construct('404 - Não encontrado');
+        parent::__construct('404 - Não encontrado:');
     }
 }

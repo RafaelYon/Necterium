@@ -8,6 +8,11 @@ use App\Models\Phone;
 
 class PhoneController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(\App\Http\Middlewares\AuthMiddleware::class);
+    }
+
     public function index(Request $request)
     {
         dp('PHONES!');
@@ -28,5 +33,13 @@ class PhoneController extends Controller
 
         $phone->number = $request->getParameter(0);
         dp($phone->save());
+    }
+
+    public function getAllContacts(Request $request)
+    {
+        $phone = Phone::new();
+        $phone->whereRaw('1 = 1');
+
+        return response(['data' => $phone->get()])->json();
     }
 }
