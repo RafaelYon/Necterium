@@ -6,7 +6,7 @@ class Hash
 {
     private function __construct() { }
 
-    public static function hash(string $data) : string
+    public static function make(string $data) : string
     {
         return password_hash($data, PASSWORD_DEFAULT);
     }

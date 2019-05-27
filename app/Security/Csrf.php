@@ -21,11 +21,14 @@ class Csrf
         return $token;
     }
 
-    public static function check(string $token) : bool
-    {
+    public static function check($token) : bool
+    {   
+        if (empty($token))
+            return false;
+        
         $storagedToken = Session::get(self::TOKEN_KEY);
 
-        if (empty($token))
+        if (empty($storagedToken))
             return false;
 
         $time = Session::get(self::TIME_KEY);

@@ -4,6 +4,7 @@ return [
     'fields' => [
         'name'      => 'nome',
         'email'     => 'e-mail',
-        'password'  => 'senha'
+        'password'  => 'senha',
+        'csrf'      => 'AAA'
     ]
 ];

@@ -2,6 +2,9 @@
 
 namespace App\Database;
 
+use App\Support\StringHelper;
+use App\Database\ConnectionManager;
+
 class QueryBuilder
 {
     protected $table = null;
@@ -135,11 +138,10 @@ class QueryBuilder
 
     protected function protectedValue($value)
     {        
-        if (is_string($value))
-            $value = '"' . $value . '"';
-
         if ($value == null)
             $value = 'NULL';
+
+        $value = ConnectionManager::getConnection()->quote($value);
 
         return $value;
     }

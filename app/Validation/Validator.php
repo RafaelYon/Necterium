@@ -4,6 +4,9 @@ namespace App\Validation;
 
 use App\Http\Request;
 use App\Exceptions\ValidationException;
+use App\Security\Csrf;
+use App\Database\ConnectionManager;
+use App\Database\QueryBuilder;
 
 class Validator
 {
@@ -89,6 +92,11 @@ class Validator
                     return true;
 
                 break;
+            case 'min':
+                if (strlen($input) >= $params[0])
+                    return true;
+
+                break;
             case 'email':
                 if (filter_var($input, FILTER_VALIDATE_EMAIL))
                     return true;
@@ -96,6 +104,21 @@ class Validator
                 break;
             case 'regex':
                 if (preg_match($params[0], $input))
+                    return true;
+
+                break;
+            case 'csrf':
+                if (Csrf::check($input))
+                    return true;
+                
+                break;
+            case 'unique':
+                $sql = QueryBuilder::table($params[0])
+                        ->select('*')
+                        ->where($params[1], $input)
+                        ->toSql();
+
+                if (empty(ConnectionManager::getConnection()->selectOne($sql)))
                     return true;
 
                 break;

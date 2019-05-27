@@ -25,7 +25,7 @@
                         </div>
                         <div class="form-group">
                             <label for="password">Senha:</label>
-                            <input class="form-control" type="password" id="password" name="password" required>
+                            <input class="form-control" type="password" id="password" name="password" minlength="8" required>
                         </div>
                     </div>
                     <div class="card-footer">

@@ -20,6 +20,9 @@ class Connection
             . ';charset=' . $config['charset'],
             $config['username'], $config['password']
         );
+
+        if (config('app.debug'))
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
     private function bindValues($statement, $bindings)
@@ -69,5 +72,15 @@ class Connection
         $results = $this->select($query, $bindings);
 
         return array_shift($results);
+    }
+
+    public function getLastInsertedId()
+    {
+        return $this->pdo->lastInsertId();
+    }
+
+    public function quote($data)
+    {
+        return $this->pdo->quote($data);
     }
 }

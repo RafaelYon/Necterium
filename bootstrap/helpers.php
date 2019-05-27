@@ -100,7 +100,7 @@ function csrf()
 
 function inputCsrf()
 {
-    return '<input type="hidden" name="csrf-token" value="' . csrf() . '">';
+    return '<input type="hidden" name="csrf" value="' . csrf() . '">';
 }
 
 function session()

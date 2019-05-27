@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Request;
-use App\Security\Csrf;
+use App\Security\Hash;
+use App\Models\User;
 
 class RegisterController
 {
@@ -16,10 +17,18 @@ class RegisterController
     {
         $data = $request->validate([
             'name'      => 'required|string|max:256',
-            'email'     => 'required|email|max:254',
-            'password'  => 'required|string'
+            'email'     => 'required|max:254|unique:users,email',
+            'password'  => 'required|string|min:8',
+            'csrf'      => 'required|csrf'
         ]);
 
-        dp($data);
+        $data['password'] = Hash::make($data['password']);
+
+        $user = new User();
+        $user->fill($data);
+
+        $user->save();
+
+        dp($user);
     }
 }

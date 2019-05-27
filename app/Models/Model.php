@@ -136,9 +136,7 @@ abstract class Model extends Fillable
 
         foreach ($columns as $column)
         {            
-            if (!isset($this->{$column}))
-                $data[$column] = null;
-            else
+            if (isset($this->{$column}))
                 $data[$column] = $this->{$column};
         }
 
@@ -177,8 +175,13 @@ abstract class Model extends Fillable
         else
             $query = $this->update($query);
 
-        return (ConnectionManager::getConnection($this->connection)
+        $saved = (ConnectionManager::getConnection($this->connection)
                     ->executeStatement($query->toSql()) > 0);
+
+        if ($saved && empty($this->id))
+            $this->id = ConnectionManager::getConnection()->getLastInsertedId();
+
+        return $saved;
     }
 
     public function delete() : bool
