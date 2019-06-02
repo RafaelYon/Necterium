@@ -52,7 +52,7 @@ class TemplateCompiler
             }
             else
             {
-                $class = config('view.template.'.$parts[0]);
+                $class = config('view.template.commands.'.$parts[0]);
 
                 if (!isset($parts[1]))
                     $parts[1] = null;
@@ -64,7 +64,14 @@ class TemplateCompiler
 
         if ($this->nextTemplate == null)
         {
-            return $this->getResultContent();
+            $result =  $this->getResultContent();
+
+            if (config('view.template.remove_multiple_empty_lines'))
+            {
+                $result = preg_replace('/(\n)+/', "\n", $result);
+            }
+
+            return $result;
         }
 
         $nextCompiler = new TemplateCompiler(
@@ -78,6 +85,11 @@ class TemplateCompiler
     public function getOriginalContent()
     {
         return $this->originalContent;
+    }
+
+    public function setOriginalContent($content)
+    {
+        $this->originalContent = $content;
     }
 
     public function getResultContent()

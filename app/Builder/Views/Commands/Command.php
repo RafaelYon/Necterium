@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Builder\Views\Commands;
-use App\Builder\Views\Commands\CommandContract;
+use App\Contracts\Builder\Views\Commands\Command as CommandContract;
 
 abstract class Command
 {

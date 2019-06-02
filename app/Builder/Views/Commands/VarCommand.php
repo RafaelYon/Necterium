@@ -2,10 +2,8 @@
 
 namespace App\Builder\Views\Commands;
 
-use App\Builder\Views\Commands\CommandContract;
+use App\Contracts\Builder\Views\Commands\Command as CommandContract;
 use App\Builder\Views\Commands\Command;
-
-use App\Builder\Views\TemplateCompiler;
 
 class VarCommand extends Command implements CommandContract
 {    
