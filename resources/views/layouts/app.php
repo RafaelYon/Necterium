@@ -4,21 +4,15 @@
         <meta charset="UTF-8">
 
         <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="octicons/build.css">
         <link rel="stylesheet" href="css/app.css">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
 
         {{yield=head}}
-
-        <script src="js/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
         <title><?=config('app.name')?> - {{yield=title}}</title>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg shadow-sm mb-2">
-            <a class="navbar-brand text-orange" href="/"><?=config('app.name')?></a>
+        <nav class="navbar navbar-expand-lg mb-2">
             <button class="navbar-toggler" type="button" data-toggle="collapse" 
                 data-target="#navbar" >
                 <span class="navbar-toggler-icon"></span>
@@ -26,31 +20,31 @@
 
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item <?=($request->getRequestUri() == '/home') ? 'active' : ''?>">
-                        <a class="nav-link" href="/home">Home</a>
-                    </li>
                 </ul>
                 <ul class="navbar-nav">
-                    <?php if (auth()::check()): ?>
-                        <li class="nav-item">
-                            <form method="POST" action="/logout">
-                                <?=inputCsrf()?>
-                                <button type="submit" class="btn nav-link">Logout</button>
-                            </form>
-                        </li>
-                    <?php else: ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/login">Login</a>
-                        </li>
-                        <li class="nav-item <?=($request->getRequestUri() == '/register') ? 'active' : ''?>">
-                            <a class="nav-link" href="/register">Registro</a>
-                        </li>
-                    <?php endif; ?>
+                    <li class="nav-item m-1">
+                        <a class="btn" 
+                        href="https://github.com/RafaelYon/Necterium/archive/master.zip">
+                            <img class="icon" src="octicons/svg/cloud-download.svg"> Download
+                        </a>
+                    </li>
+                    <li class="nav-item m-1">
+                        <a class="btn" href="https://github.com/RafaelYon/Necterium">
+                            <img class="icon" src="octicons/svg/star.svg"> Star
+                        </a>
+                    </li>
+                    <li class="nav-item m-1">
+                        <a class="btn" href="https://github.com/RafaelYon/Necterium/issues">
+                            <img class="icon" src="octicons/svg/issue-opened.svg"> Issue
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>
 
         {{yield=content}}
 
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
     </body>
 </html>

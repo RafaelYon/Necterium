@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'name' => 'Agenda Telefônica',
+    'name' => 'Necterium',
 
     'debug' => true,
 

@@ -27,7 +27,7 @@ class Auth
         if (empty($this->user))
         {
             $this->user = User::find($this->id);
-            Session::set(config(self::SESSION_KEY, $this));
+            Session::set(config(self::SESSION_KEY), $this);
         }
     }
     

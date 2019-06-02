@@ -8,9 +8,9 @@ return [
             'driver' => 'mysql',
             'host' => '127.0.0.1',
             'port' => '3306',
-            'database' => 'agenda_telefonica',
-            'username' => 'agenda_telefonica',
-            'password' => 'agenda_telefonica',
+            'database' => 'necterium',
+            'username' => 'necterium',
+            'password' => 'necterium',
             'charset' => 'utf8mb4'
         ],
     ]
