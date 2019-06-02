@@ -44,6 +44,20 @@
 
         {{yield=content}}
 
+        <div class="container footer">
+            <div class="row">
+                <div class="col">
+                    <p class="text-muted">
+                        <a class="text-dark" href="https://github.com/RafaelYon/Necterium">
+                            <strong>RafaelYon/Necterium</strong>
+                        </a> 
+                        is licensed under the 
+                        <a href="https://github.com/RafaelYon/Necterium/blob/master/LICENSE">MIT License</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <script src="js/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
 

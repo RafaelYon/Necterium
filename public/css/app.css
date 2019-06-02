@@ -78,3 +78,8 @@ a.text-orange:focus {
 .icon {
     vertical-align: text-top;
 }
+
+.footer {
+    position: absolute;
+    bottom: 0;
+}
