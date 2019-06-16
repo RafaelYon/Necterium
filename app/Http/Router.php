@@ -2,8 +2,6 @@
 
 namespace App\Http;
 
-use Exception;
-
 use App\Http\Request;
 use App\Http\Response;
 use App\Support\UrlHelper;

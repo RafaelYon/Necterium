@@ -1,0 +1,22 @@
+{
+    "name": "rafael-yon/necterium",
+    "description": "Necterium is an MVC framework written in PHP with the goal of having zero dependencies.",
+    "type": "project",
+    "homepage": "https://github.com/RafaelYon/Necterium",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rafael Antonio Yon",
+            "email": "rafaelyon.1999@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.3.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    }
+}

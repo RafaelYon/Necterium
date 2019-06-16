@@ -38,7 +38,7 @@ class Response
             $this->content->addVar('request', $request);
     }
 
-    public function response() : string
+    public function response()
     {
         $this->writeHeader();
         
